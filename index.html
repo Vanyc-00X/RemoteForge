@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RemoteForge — Remote Ops Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-mark">RF</span>
+        <div>
+          <strong>RemoteForge</strong>
+          <small>Ops Console</small>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-item active" data-panel="overview">Обзор</button>
+        <button class="nav-item" data-panel="console">Консоль</button>
+        <button class="nav-item" data-panel="software">Софт</button>
+        <button class="nav-item" data-panel="files">Файлы</button>
+        <button class="nav-item" data-panel="scripts">Скрипты</button>
+        <button class="nav-item" data-panel="security">Безопасность</button>
+      </nav>
+
+      <div class="device-list">
+        <div class="section-label">Устройства</div>
+        <button class="device active" data-device="workstation">
+          <span class="dot online"></span>
+          <div>
+            <strong>WORKSTATION-01</strong>
+            <small>Windows 11 · 192.168.1.42</small>
+          </div>
+        </button>
+        <button class="device" data-device="lab">
+          <span class="dot online"></span>
+          <div>
+            <strong>LAB-RENDER</strong>
+            <small>Ubuntu 24 · 10.0.0.18</small>
+          </div>
+        </button>
+        <button class="device" data-device="office">
+          <span class="dot idle"></span>
+          <div>
+            <strong>OFFICE-PC</strong>
+            <small>Windows 10 · offline 2ч</small>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="devicePath">Fleet / WORKSTATION-01</p>
+          <h1 id="panelTitle">Обзор системы</h1>
+        </div>
+        <div class="top-actions">
+          <button class="ghost" id="btnRefresh">Обновить</button>
+          <button class="accent" id="btnConnect">Подключено</button>
+        </div>
+      </header>
+
+      <section class="panel active" id="panel-overview">
+        <div class="metrics">
+          <article class="metric"><span>CPU</span><strong id="cpuVal">34%</strong><div class="meter"><i style="width:34%"></i></div></article>
+          <article class="metric"><span>RAM</span><strong id="ramVal">18.2 / 32 GB</strong><div class="meter"><i style="width:57%"></i></div></article>
+          <article class="metric"><span>Disk</span><strong>412 / 1024 GB</strong><div class="meter amber"><i style="width:40%"></i></div></article>
+          <article class="metric"><span>Uptime</span><strong>4д 11ч</strong><div class="meter green"><i style="width:88%"></i></div></article>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-h"><h2>Быстрые действия</h2></div>
+            <div class="actions">
+              <button data-action="lock">🔒 Блокировка</button>
+              <button data-action="reboot">↻ Перезагрузка</button>
+              <button data-action="shutdown">⏻ Выключение</button>
+              <button data-action="screenshot">🖼 Скриншот</button>
+              <button data-action="clipboard">📋 Буфер</button>
+              <button data-action="wake">⚡ Wake-on-LAN</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>Процессы</h2><button class="linkish" id="killTop">Остановить выбранный</button></div>
+            <table class="table" id="procTable">
+              <thead><tr><th>Имя</th><th>CPU</th><th>RAM</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-console">
+        <div class="console-wrap">
+          <div class="console-toolbar">
+            <span>CMD · PowerShell · Bash</span>
+            <div class="seg">
+              <button class="seg-btn active" data-shell="cmd">CMD</button>
+              <button class="seg-btn" data-shell="ps">PowerShell</button>
+              <button class="seg-btn" data-shell="bash">Bash</button>
+            </div>
+          </div>
+          <pre class="console" id="consoleOut"></pre>
+          <form class="console-input" id="consoleForm">
+            <span class="prompt" id="prompt">C:\Users\admin&gt;</span>
+            <input id="consoleCmd" autocomplete="off" spellcheck="false" placeholder="Введите команду…" />
+            <button type="submit">Enter</button>
+          </form>
+          <div class="shortcuts">
+            <button data-cmd="systeminfo">systeminfo</button>
+            <button data-cmd="ipconfig /all">ipconfig</button>
+            <button data-cmd="tasklist">tasklist</button>
+            <button data-cmd="netstat -ano">netstat</button>
+            <button data-cmd="dir">dir</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-software">
+        <div class="card">
+          <div class="card-h">
+            <h2>Каталог установки</h2>
+            <input class="search" id="softSearch" placeholder="Поиск пакета…" />
+          </div>
+          <div class="soft-grid" id="softGrid"></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h2>Очередь развёртывания</h2></div>
+          <div class="queue" id="deployQueue"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-files">
+        <div class="card">
+          <div class="card-h"><h2>Файловый менеджер</h2><span class="muted" id="cwd">C:\Users\admin</span></div>
+          <div class="files" id="fileList"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-scripts">
+        <div class="card">
+          <div class="card-h"><h2>Автоматизация</h2><button class="accent small" id="runScript">Запустить выбранный</button></div>
+          <div class="scripts" id="scriptList"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-security">
+        <div class="grid-2">
+          <div class="card">
+            <h2>Сессия</h2>
+            <ul class="kv">
+              <li><span>Протокол</span><strong>TLS 1.3 · mTLS</strong></li>
+              <li><span>Агент</span><strong>ForgeAgent 2.4.1</strong></li>
+              <li><span>Последний вход</span><strong>сегодня 14:02</strong></li>
+              <li><span>2FA</span><strong>включена</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Политики</h2>
+            <label class="switch-row"><span>Только whitelisted команды</span><input type="checkbox" checked /></label>
+            <label class="switch-row"><span>Запрет выключения без confirm</span><input type="checkbox" checked /></label>
+            <label class="switch-row"><span>Логировать clipboard sync</span><input type="checkbox" /></label>
+            <label class="switch-row"><span>Автообновление агента</span><input type="checkbox" checked /></label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
